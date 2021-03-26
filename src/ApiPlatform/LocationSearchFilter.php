@@ -14,9 +14,9 @@ class LocationSearchFilter extends AbstractFilter
             return;
         }
 
-        $alias = $queryBuilder->getRootAliases()[0];
+        $alias = $queryBuilder->getRootAliases()[0];// dd($value); die();
         $queryBuilder
-            ->andWhere(sprintf('%s.zipcode LIKE :search OR %s.location LIKE :search', $alias, $alias))
+            ->andWhere(sprintf('LOWER(%s.zipcode) LIKE LOWER(:search) OR LOWER(%s.location) LIKE LOWER(:search)', $alias, $alias))
             ->setParameter('search', '%'.$value.'%');
     }
 
