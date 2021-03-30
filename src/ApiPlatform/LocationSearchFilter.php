@@ -14,10 +14,14 @@ class LocationSearchFilter extends AbstractFilter
             return;
         }
 
-        $alias = $queryBuilder->getRootAliases()[0];// dd($value); die();
+        $zipcode = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+        $searchterm = trim(preg_replace('/[0-9]+/', '', $value));
+
+        $alias = $queryBuilder->getRootAliases()[0]; // dd($zipcode, $searchterm); die();
         $queryBuilder
-            ->andWhere(sprintf('LOWER(%s.zipcode) LIKE LOWER(:search) OR LOWER(%s.location) LIKE LOWER(:search)', $alias, $alias))
-            ->setParameter('search', '%'.$value.'%');
+            ->andWhere(sprintf('LOWER(%s.zipcode) LIKE LOWER(:zipsearch) AND LOWER(%s.location) LIKE LOWER(:textsearch)', $alias, $alias))
+            ->setParameter('zipsearch', '%'.$zipcode.'%')
+            ->setParameter('textsearch', '%'.$searchterm.'%');
     }
 
     public function getDescription(string $resourceClass): array
@@ -26,7 +30,7 @@ class LocationSearchFilter extends AbstractFilter
             'search' => [
                 'property' => null,
                 'type' => 'string',
-                'required' => true,
+                'required' => false,
                 'openapi' => [
                     'description' => 'Search across multiple fields',
                 ],
