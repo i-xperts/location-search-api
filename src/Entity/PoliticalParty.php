@@ -35,16 +35,6 @@ class PoliticalParty
      */
     private $short;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Subscriber::class, mappedBy="party")
-     */
-    private $subscribers;
-
-    public function __construct()
-    {
-        $this->subscribers = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -70,36 +60,6 @@ class PoliticalParty
     public function setShort(?string $short): self
     {
         $this->short = $short;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Subscriber[]
-     */
-    public function getSubscribers(): Collection
-    {
-        return $this->subscribers;
-    }
-
-    public function addSubscriber(Subscriber $subscriber): self
-    {
-        if (!$this->subscribers->contains($subscriber)) {
-            $this->subscribers[] = $subscriber;
-            $subscriber->setParty($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscriber(Subscriber $subscriber): self
-    {
-        if ($this->subscribers->removeElement($subscriber)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriber->getParty() === $this) {
-                $subscriber->setParty(null);
-            }
-        }
 
         return $this;
     }

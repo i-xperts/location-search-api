@@ -44,24 +44,24 @@ class Subscriber
     private $lastname;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="subscribers")
+     * @ORM\ManyToOne(targetEntity=Location::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity=State::class, inversedBy="subscribers")
+     * @ORM\ManyToOne(targetEntity=State::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $state;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PoliticalParty::class, inversedBy="subscribers")
+     * @ORM\ManyToOne(targetEntity=PoliticalParty::class)
      */
     private $party;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PoliticalFunction::class, inversedBy="subscribers")
+     * @ORM\ManyToOne(targetEntity=PoliticalFunction::class)
      */
     private $function;
 

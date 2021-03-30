@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use App\ApiPlatform\LocationSearchFilter;
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
+ *     normalizationContext={"groups"={"location:read"}},
+ *     denormalizationContext={"groups"={"location:write"}},
  *     shortName="locations"
  * )
  * @ApiFilter(LocationSearchFilter::class)
@@ -28,16 +32,19 @@ class Location
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="smallint", length=4, options={"unsigned"=true})
+     * @Groups({"location:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="smallint", length=4, options={"unsigned"=true})
+     * @Groups({"location:read"})
      */
     private $zipcode;
 
     /**
      * @ORM\Column(type="string", length=32)
+     * @Groups({"location:read"})
      */
     private $location;
 
@@ -46,16 +53,6 @@ class Location
      * @ORM\JoinColumn(nullable=false)
      */
     private $state;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Subscriber::class, mappedBy="location")
-     */
-    private $subscribers;
-
-    public function __construct()
-    {
-        $this->subscribers = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -91,39 +88,20 @@ class Location
         return $this->state;
     }
 
+    /**
+     * Get the id of the state
+     * 
+     * @Groups({"location:read"})
+     * @SerializedName("state")
+     */
+    public function getStateId(): ?int
+    {
+        return $this->state->getId();
+    }
+
     public function setState(?State $state): self
     {
         $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Subscriber[]
-     */
-    public function getSubscribers(): Collection
-    {
-        return $this->subscribers;
-    }
-
-    public function addSubscriber(Subscriber $subscriber): self
-    {
-        if (!$this->subscribers->contains($subscriber)) {
-            $this->subscribers[] = $subscriber;
-            $subscriber->setLocation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscriber(Subscriber $subscriber): self
-    {
-        if ($this->subscribers->removeElement($subscriber)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriber->getLocation() === $this) {
-                $subscriber->setLocation(null);
-            }
-        }
 
         return $this;
     }

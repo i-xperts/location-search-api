@@ -30,16 +30,6 @@ class PoliticalFunction
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Subscriber::class, mappedBy="function")
-     */
-    private $subscribers;
-
-    public function __construct()
-    {
-        $this->subscribers = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -53,36 +43,6 @@ class PoliticalFunction
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Subscriber[]
-     */
-    public function getSubscribers(): Collection
-    {
-        return $this->subscribers;
-    }
-
-    public function addSubscriber(Subscriber $subscriber): self
-    {
-        if (!$this->subscribers->contains($subscriber)) {
-            $this->subscribers[] = $subscriber;
-            $subscriber->setFunction($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscriber(Subscriber $subscriber): self
-    {
-        if ($this->subscribers->removeElement($subscriber)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriber->getFunction() === $this) {
-                $subscriber->setFunction(null);
-            }
-        }
 
         return $this;
     }
