@@ -17,9 +17,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *     collectionOperations={"get"},
  *     itemOperations={"get"},
- *     normalizationContext={"groups"={"location:read"}},
- *     denormalizationContext={"groups"={"location:write"}},
- *     shortName="locations"
+ *     normalizationContext={"groups"={"location:read"}, "swagger_definition_name"="Read"},
+ *     denormalizationContext={"groups"={"location:write"}, "swagger_definition_name"="Write"},
+ *     shortName="locations",
+ *     attributes={
+ *         "pagination_items_per_page"=10
+ *     }
  * )
  * @ApiFilter(LocationSearchFilter::class)
  * @ApiFilter(SearchFilter::class, properties={"zipcode": "partial", "location": "partial"})
@@ -49,8 +52,9 @@ class Location
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity=State::class, inversedBy="locations")
+     * @ORM\ManyToOne(targetEntity=State::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"location:read"})
      */
     private $state;
 
@@ -92,7 +96,7 @@ class Location
      * Get the id of the state
      * 
      * @Groups({"location:read"})
-     * @SerializedName("state")
+     * @SerializedName("stateId")
      */
     public function getStateId(): ?int
     {
